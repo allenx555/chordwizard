@@ -1,0 +1,152 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: ChordWizard API
+host: 127.0.0.1:8000
+basePath: /v1
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Token:
+    type: apiKey
+    description: Add `Token <your_token>`  in `Authorization` header
+    name: Authorization
+    in: header
+paths:
+  /auth/:
+    post:
+      description: Obtain auth token
+      produces:
+        - application/json
+      parameters:
+        - name: username
+          in: formData
+          required: true
+          type: string
+        - name: password
+          in: formData
+          required: true
+          type: string
+      responses:
+        '200':
+          description: auth token
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: Auth Token of given user
+
+  /me/:
+    get:
+      description: return informations about user
+      security:
+        - Token: []
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserInfo'
+  /me/password/:
+    post:
+      description: Change User Password
+      parameters:
+        - name: payload
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              old_password:
+                type: string
+              new_password:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserInfo'
+        '403':
+          description: Wrong Old Password
+          schema:
+            $ref: '#/definitions/Error'
+  /register/:
+    post:
+      description: 'get the invitation code,confirm and then creat a new user'
+      parameters:
+        - name: register
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              invitationcode:
+                type: string
+              username:
+                type: string
+              email:
+                type: string
+              password:
+                type: string
+            description: User Status
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+                description: Auth Token
+              UserInfo:
+                $ref: '#/definitions/UserInfo'
+        '400':
+          description: username or email already exist
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: The invitation code does not exists
+          schema:
+            $ref: '#/definitions/Error'
+  /beta/:
+    post:
+      description: get the massage of potential user
+      parameters:
+        - name: potential user
+          in: body
+          required: true
+          description: the massage of potential user
+          schema:
+            $ref: '#/definitions/PotentialUser'
+      responses:
+        '200':
+          description: successful operation
+
+definitions:
+  UserInfo:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+  PotentialUser:
+    type: object
+    properties:
+      email:
+        type: string
+      favoritebrowser:
+        type: string
+      job:
+        type: string

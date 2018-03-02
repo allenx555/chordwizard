@@ -21,10 +21,5 @@ from users import views
 urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
-
-    url(r'^users/', include('users.urls')),
-    url(r'^users/', include('django.contrib.auth.urls')),
-    url(r'^$', views.index, name='index'),
-
-    url(r'^v1/', include('chordwizard.urlsv')),
+    url(r'^v1/', include('chordwizard.urlsv1')),
 ]

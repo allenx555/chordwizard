@@ -48,3 +48,18 @@ class InviteCode(models.Model):
         on_delete=models.CASCADE,
         editable=False,
     )
+
+
+class PotentialUser(models.Model):
+    email = models.CharField(
+        "联系邮箱",
+        max_length=20,
+    )
+    favoritebrowser = models.CharField(
+        "常用浏览器",
+        max_length=20,
+    )
+    job = models.CharField(
+        "职业",
+        max_length=20,
+    )
